@@ -20,8 +20,8 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-6">
+      <div className="container flex h-16 items-center justify-around">
+        
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-2xl font-bold">Gardenia</span>
           </Link>
@@ -68,11 +68,10 @@ export default function Header() {
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-        </div>
+        
 
-        <div className="hidden md:flex items-center gap-4">
-          <div className="relative w-full max-w-sm">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <div className="relative w-full max-w-sm">
+            <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search products..."
@@ -91,7 +90,7 @@ export default function Header() {
           <Link href="/auth/sign-in">
             <Button>Sign In</Button>
           </Link>
-        </div>
+        
 
         <button
           className="md:hidden"
