@@ -28,9 +28,13 @@ export default function Home() {
             <Button size="lg" className="bg-green-600 hover:bg-green-700">
               Shop Local Produce
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
-              Join as Farmer
-            </Button>
+            <Button
+  size="lg"
+  className="bg-white text-green-700 border border-green-600 hover:bg-green-600 hover:text-white transition-all duration-300 ease-in-out transform hover:-translate-y-1 shadow-md hover:shadow-lg"
+>
+  Join as Farmer
+</Button>
+
           </div>
         </div>
       </section>

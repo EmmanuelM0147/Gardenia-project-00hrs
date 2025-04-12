@@ -1,0 +1,203 @@
+/* components/header.module.css */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--background);
+  backdrop-filter: blur(10px); /* Adjust as needed */
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+}
+
+.container {
+  display: flex;
+  height: 4rem; /* 64px */
+  align-items: center;
+  justify-content: space-around;
+  max-width: var(--max-w); /* Assuming you have this variable */
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.navMenu {
+  display: none; /* Hidden by default, visible on larger screens */
+}
+
+@media (min-width: 768px) { /* Adjust breakpoint as needed */
+  .navMenu {
+    display: block;
+  }
+}
+
+.navMenuList {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navMenuItem {
+  margin-left: 1rem;
+}
+
+.navMenuTrigger {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--text-color);
+  transition: background-color 0.2s ease;
+}
+
+.navMenuTrigger:hover,
+.navMenuTrigger:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+  outline: none;
+}
+
+.navMenuContent {
+  min-width: 220px;
+  background-color: var(--dropdown-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--dropdown-shadow);
+  padding: 0.5rem;
+  z-index: 10;
+  /* Desktop side panel layout */
+  position: absolute;
+  left: 100%;
+  top: 0;
+  transform: translateX(100%); /* Initially hidden */
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Add a class to indicate when the dropdown is open */
+.navMenuContent.open {
+  transform: translateX(0); /* Visible when open */
+}
+
+/* Mobile full-width sliding panel layout */
+@media (max-width: 767px) {
+  .navMenuContent {
+    position: fixed;
+    top: 0;
+    left: 0; /* Or right: 0 for a different slide-in direction */
+    width: 100%;
+    height: 100%;
+    transform: translateX(-100%); /* Or translateX(100%) if sliding from right */
+    background-color: var(--dropdown-bg); /* Ensure a contrasting background */
+    padding: 1rem;
+  }
+}
+.nestedDropdownContent {
+  /* Removed: The styles for .nestedDropdownContent are now in .navMenuContent and its media query */
+  /* The class is still used in TSX but the styling is now conditional based on screen size */
+
+  border-radius: var(--radius);
+  box-shadow: var(--dropdown-shadow);
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjust minmax as needed */
+  gap: 0.5rem;
+}
+
+.navMenuContent ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdownItem { /* Target dropdown items within nested content */
+  display: flex; /* Modified: Use flex to align icon and text */
+  align-items: center; /* Modified: Center icon and text vertically */
+  padding: 0.5rem 1rem; /* Consistent padding for all items */
+  color: var(--text-color);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background-color: var(--muted);
+}
+
+.categoryLink { /* Style category links */
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  color: var(--text-color);
+  text-decoration: none;
+  border-radius: var(--radius);
+  transition: background-color 0.2s ease;
+}
+
+.categoryLink:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.categoryIcon { /* Style category icons */
+  margin-right: 0.5rem;
+  font-size: 1rem; /* Modified: Set to 16px as per the prompt */
+  color: var(--text-color);
+}
+
+.searchInputContainer {
+  position: relative;
+  width: 100%;
+  max-width: 300px; /* Adjust as needed */
+}
+
+.searchInput {
+  padding-left: 2.5rem;
+  width: 100%;
+  /* Add other input styles to match your design */
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1rem;
+  width: 1rem;
+  color: var(--muted-foreground); 
+}
+
+.mobileMenuButton {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .mobileMenuButton {
+    display: none;
+  }
+}
+
+.mobileMenu {
+  border-top: 1px solid var(--border);
+}
+
+.mobileMenuContainer {
+  padding: 1rem;
+}
+
+.mobileMenuNav {
+  margin-top: 1rem;
+}
+
+.mobileMenuLink {
+  display: block;
+  padding: 0.5rem 0;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+/* Add more styles as needed to match the original appearance */
