@@ -1,83 +1,133 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import ProductGrid from "@/components/products/product-grid";
-import ProductFilters from "@/components/products/product-filters";
-import { ProductSearch } from "@/components/products/product-search";
+"use client";
 
-export const revalidate = 3600; // Revalidate every hour
-
-async function getProducts() {
-  const supabase = createServerComponentClient({ cookies });
-  
-  try {
-    const { data: products, error } = await supabase
-      .from("products")
-      .select(`
-        *,
-        category:categories(name),
-        images:product_images(url, alt_text, is_primary)
-      `)
-      .eq("is_active", true)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching products:", error);
-      return [];
-    }
-
-    return products;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return [];
-  }
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  subcategory?: string;
+  price: number;
+  unit: string;
+  description: string;
+  imageUrl: string;
+  stock: number;
 }
 
-export default async function ProductsPage() {
-  const products = await getProducts();
+const categories = [
+  "Processed Products",
+  "Tubers",
+  "Legumes",
+  "Cereals/Grains",
+  "Honey",
+  "Vegetables",
+  "Fruits",
+  "Livestock",
+  "Others",
+];
 
-  // Handle case when no products are found
-  if (!products || products.length === 0) {
+const subcategories = {
+  "Processed Products": ["Hibiscus", "Food", "Drinks"],
+};
+
+async function fetchProducts(): Promise<Product[]> {
+  const res = await fetch("/api/products");
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
+  return res.json();
+}
+
+export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>("All");
+
+  useEffect(() => {
+    const getProducts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchProducts();
+        setProducts(data);
+      } catch (err: any) {
+        setError(err.message || "An unexpected error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+    getProducts();
+  }, []);
+
+  const filteredProducts = products.filter((product) => {
+    if (selectedCategory === "All") return true;
+    if (product.category !== selectedCategory) return false;
+    if (selectedSubcategory === "All") return true;
+    return product.subcategory === selectedSubcategory;
+  });
+
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setSelectedCategory(event.target.value);
+    setSelectedSubcategory("All");
+  };
+
+  const handleSubcategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setSelectedSubcategory(event.target.value);
+  };
+
+  if (loading) {
+    return <p>Loading products...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  if (filteredProducts.length === 0) {
     return (
-      <div className="container py-8">
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-4">
-            <h1 className="text-3xl font-bold">Products</h1>
-            <ProductSearch />
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <aside className="lg:col-span-1">
-              <ProductFilters />
-            </aside>
-            
-            <main className="lg:col-span-3">
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">No products found</p>
-              </div>
-            </main>
-          </div>
-        </div>
-      </div>
+      <p>No products found matching the selected filters.</p>
     );
   }
 
   return (
-    <div className="container py-8">
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-4">
-          <h1 className="text-3xl font-bold">Products</h1>
-          <ProductSearch />
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <aside className="lg:col-span-1">
-            <ProductFilters />
-          </aside>
-          
-          <main className="lg:col-span-3">
-            <ProductGrid products={products} />
-          </main>
-        </div>
+    <div>
+      <h1>Products</h1>
+
+      <select value={selectedCategory} onChange={handleCategoryChange}>
+        <option value="All">All Categories</option>
+        {categories.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
+      </select>
+
+      {selectedCategory in subcategories && (
+        <select value={selectedSubcategory} onChange={handleSubcategoryChange}>
+          <option value="All">All Subcategories</option>
+          {subcategories[selectedCategory].map((subcategory) => (
+            <option key={subcategory} value={subcategory}>
+              {subcategory}
+            </option>
+          ))}
+        </select>
+      )}
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem" }}>
+        {filteredProducts.map((product) => (
+          <div key={product.id} style={{ border: "1px solid #ccc", padding: "1rem" }}>
+            <img src={product.imageUrl} alt={product.name} style={{ maxWidth: "100%", height: "auto" }} />
+            <h3>{product.name}</h3>
+            <p>Category: {product.category}</p>
+            {product.subcategory && <p>Subcategory: {product.subcategory}</p>}
+            <p>Price: ${product.price} / {product.unit}</p>
+            <p>{product.description}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

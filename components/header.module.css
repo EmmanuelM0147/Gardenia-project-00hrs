@@ -71,7 +71,6 @@
   box-shadow: var(--dropdown-shadow);
   padding: 0.5rem;
   z-index: 10;
-  /* Desktop side panel layout */
   position: absolute;
   left: 100%;
   top: 0;
@@ -79,7 +78,25 @@
   transition: transform 0.3s ease-in-out;
 }
 
-/* Add a class to indicate when the dropdown is open */
+.dropdown-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.dropdown-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.dropdown-exit {
+  opacity: 1;
+}
+
+.dropdown-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+}
 .navMenuContent.open {
   transform: translateX(0); /* Visible when open */
 }
@@ -95,7 +112,7 @@
     transform: translateX(-100%); /* Or translateX(100%) if sliding from right */
     background-color: var(--dropdown-bg); /* Ensure a contrasting background */
     padding: 1rem;
-  }
+    }
 }
 .nestedDropdownContent {
   /* Removed: The styles for .nestedDropdownContent are now in .navMenuContent and its media query */
@@ -193,8 +210,58 @@
   margin-top: 1rem;
 }
 
-.mobileMenuLink {
+.mobileMenuLink { /* Mobile Menu Links */
   display: block;
+  padding: 0.5rem 0;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+/* Processed Products Dropdown Styles */
+.processedProductsTrigger {
+  color: var(--primary); /* Primary brand color for the main text */
+}
+
+.processedProductsMenu {
+  min-width: 150px; /* Adjust as needed */
+  padding: 1rem; /* Consistent padding (16px) */
+  border-radius: var(--radius);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  background-color: var(--background);
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth 0.3s transition */
+}
+
+.processedProductsMenu.open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.processedProductsMenu.closed {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none; /* Prevent interactions when closed */
+}
+
+.processedProductsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.processedProductsItem {
+  padding: 0.5rem 0; /* Spacing between items */
+}
+
+.processedProductsLink {
+  display: block;
+  padding: 0.5rem;
+  color: var(--text-color);
+  text-decoration: none;
+  border-radius: var(--radius);
+}
+
+.processedProductsLink:hover {
+  background-color: var(--muted); /* Subtle hover effect */
   padding: 0.5rem 0;
   color: var(--text-color);
   text-decoration: none;
